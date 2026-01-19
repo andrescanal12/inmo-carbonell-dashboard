@@ -30,7 +30,10 @@ function App() {
     setStatus('loading');
     setMessage('');
 
-    const webhookUrl = '/api/create-invoice';
+    // Use localhost in development, relative path in production
+    const webhookUrl = window.location.hostname === 'localhost'
+      ? 'http://localhost:3001/api/create-invoice'
+      : '/api/create-invoice';
 
     try {
       const response = await fetch(webhookUrl, {
