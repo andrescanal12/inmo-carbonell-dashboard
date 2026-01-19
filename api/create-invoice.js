@@ -4,9 +4,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { apartment, refNumber, invNumber, period } = req.body;
+    const { apartment, refNumber, invNumber, period, transferDate } = req.body;
 
-    console.log('📝 Recibida petición de factura:', { apartment, refNumber, invNumber, period });
+    console.log('📝 Recibida petición de factura:', { apartment, refNumber, invNumber, period, transferDate });
 
     const n8nWebhook = 'https://primary-production-7d4ca.up.railway.app/webhook/d8a04f04-3d84-4e8f-b64b-7c6d26e17e02';
 
@@ -20,7 +20,8 @@ export default async function handler(req, res) {
                 apartment,
                 refNumber,
                 invNumber,
-                period
+                period,
+                transferDate
             }),
         });
 
@@ -36,12 +37,12 @@ export default async function handler(req, res) {
         } else if (response.status === 404) {
             // MODO DEMO: n8n no está activo, simular éxito
             console.log('⚠️ n8n no disponible - MODO DEMO activado');
-            console.log('📋 Datos que se enviarían:', { apartment, refNumber, invNumber, period });
+            console.log('📋 Datos que se enviarían:', { apartment, refNumber, invNumber, period, transferDate });
             return res.status(200).json({
                 success: true,
                 message: `✅ MODO DEMO: Factura simulada para ${apartment}. Activa n8n para funcionamiento real.`,
                 demo: true,
-                data: { apartment, refNumber, invNumber, period }
+                data: { apartment, refNumber, invNumber, period, transferDate }
             });
         } else {
             console.error('❌ Error del webhook n8n:', response.status, data);

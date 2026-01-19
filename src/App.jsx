@@ -22,6 +22,7 @@ function App() {
   const [selectedApartment, setSelectedApartment] = useState(APARTMENTS[0]);
   const [invNumber, setInvNumber] = useState('');
   const [period, setPeriod] = useState('');
+  const [transferDate, setTransferDate] = useState('');
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
 
@@ -45,7 +46,8 @@ function App() {
           apartment: selectedApartment.address,
           refNumber: selectedApartment.ref,
           invNumber,
-          period
+          period,
+          transferDate
         }),
       });
 
@@ -124,6 +126,17 @@ function App() {
               <option value="Del 01 al 30 de Noviembre de 2026">Del 01 al 30 de Noviembre de 2026</option>
               <option value="Del 01 al 31 de Diciembre de 2026">Del 01 al 31 de Diciembre de 2026</option>
             </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="transferDate">Transferencia Recibida</label>
+            <input
+              id="transferDate"
+              type="date"
+              value={transferDate}
+              onChange={(e) => setTransferDate(e.target.value)}
+              required
+            />
           </div>
 
           <button
