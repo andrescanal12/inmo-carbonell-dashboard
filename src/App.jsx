@@ -30,7 +30,7 @@ function App() {
     setStatus('loading');
     setMessage('');
 
-    const webhookUrl = 'http://localhost:3001/api/create-invoice';
+    const webhookUrl = '/api/create-invoice';
 
     try {
       const response = await fetch(webhookUrl, {
