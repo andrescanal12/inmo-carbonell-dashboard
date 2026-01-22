@@ -113,18 +113,39 @@ function App() {
               required
             >
               <option value="">Seleccionar periodo...</option>
-              <option value="Del 01 al 31 de Enero de 2026">Del 01 al 31 de Enero de 2026</option>
-              <option value="Del 01 al 28 de Febrero de 2026">Del 01 al 28 de Febrero de 2026</option>
-              <option value="Del 01 al 31 de Marzo de 2026">Del 01 al 31 de Marzo de 2026</option>
-              <option value="Del 01 al 30 de Abril de 2026">Del 01 al 30 de Abril de 2026</option>
-              <option value="Del 01 al 31 de Mayo de 2026">Del 01 al 31 de Mayo de 2026</option>
-              <option value="Del 01 al 30 de Junio de 2026">Del 01 al 30 de Junio de 2026</option>
-              <option value="Del 01 al 31 de Julio de 2026">Del 01 al 31 de Julio de 2026</option>
-              <option value="Del 01 al 31 de Agosto de 2026">Del 01 al 31 de Agosto de 2026</option>
-              <option value="Del 01 al 30 de Septiembre de 2026">Del 01 al 30 de Septiembre de 2026</option>
-              <option value="Del 01 al 31 de Octubre de 2026">Del 01 al 31 de Octubre de 2026</option>
-              <option value="Del 01 al 30 de Noviembre de 2026">Del 01 al 30 de Noviembre de 2026</option>
-              <option value="Del 01 al 31 de Diciembre de 2026">Del 01 al 31 de Diciembre de 2026</option>
+              {selectedApartment.ref === "8" ? (
+                // Periodos especiales para apartamento #8 (del 15 al 14)
+                <>
+                  <option value="Del 15 de Enero al 14 de Febrero de 2026">Del 15 de Enero al 14 de Febrero de 2026</option>
+                  <option value="Del 15 de Febrero al 14 de Marzo de 2026">Del 15 de Febrero al 14 de Marzo de 2026</option>
+                  <option value="Del 15 de Marzo al 14 de Abril de 2026">Del 15 de Marzo al 14 de Abril de 2026</option>
+                  <option value="Del 15 de Abril al 14 de Mayo de 2026">Del 15 de Abril al 14 de Mayo de 2026</option>
+                  <option value="Del 15 de Mayo al 14 de Junio de 2026">Del 15 de Mayo al 14 de Junio de 2026</option>
+                  <option value="Del 15 de Junio al 14 de Julio de 2026">Del 15 de Junio al 14 de Julio de 2026</option>
+                  <option value="Del 15 de Julio al 14 de Agosto de 2026">Del 15 de Julio al 14 de Agosto de 2026</option>
+                  <option value="Del 15 de Agosto al 14 de Septiembre de 2026">Del 15 de Agosto al 14 de Septiembre de 2026</option>
+                  <option value="Del 15 de Septiembre al 14 de Octubre de 2026">Del 15 de Septiembre al 14 de Octubre de 2026</option>
+                  <option value="Del 15 de Octubre al 14 de Noviembre de 2026">Del 15 de Octubre al 14 de Noviembre de 2026</option>
+                  <option value="Del 15 de Noviembre al 14 de Diciembre de 2026">Del 15 de Noviembre al 14 de Diciembre de 2026</option>
+                  <option value="Del 15 de Diciembre de 2026 al 14 de Enero de 2027">Del 15 de Diciembre de 2026 al 14 de Enero de 2027</option>
+                </>
+              ) : (
+                // Periodos normales para otros apartamentos (del 01 al 31)
+                <>
+                  <option value="Del 01 al 31 de Enero de 2026">Del 01 al 31 de Enero de 2026</option>
+                  <option value="Del 01 al 28 de Febrero de 2026">Del 01 al 28 de Febrero de 2026</option>
+                  <option value="Del 01 al 31 de Marzo de 2026">Del 01 al 31 de Marzo de 2026</option>
+                  <option value="Del 01 al 30 de Abril de 2026">Del 01 al 30 de Abril de 2026</option>
+                  <option value="Del 01 al 31 de Mayo de 2026">Del 01 al 31 de Mayo de 2026</option>
+                  <option value="Del 01 al 30 de Junio de 2026">Del 01 al 30 de Junio de 2026</option>
+                  <option value="Del 01 al 31 de Julio de 2026">Del 01 al 31 de Julio de 2026</option>
+                  <option value="Del 01 al 31 de Agosto de 2026">Del 01 al 31 de Agosto de 2026</option>
+                  <option value="Del 01 al 30 de Septiembre de 2026">Del 01 al 30 de Septiembre de 2026</option>
+                  <option value="Del 01 al 31 de Octubre de 2026">Del 01 al 31 de Octubre de 2026</option>
+                  <option value="Del 01 al 30 de Noviembre de 2026">Del 01 al 30 de Noviembre de 2026</option>
+                  <option value="Del 01 al 31 de Diciembre de 2026">Del 01 al 31 de Diciembre de 2026</option>
+                </>
+              )}
             </select>
           </div>
 
