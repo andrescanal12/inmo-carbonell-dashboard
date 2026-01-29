@@ -78,6 +78,11 @@ function App() {
 
   return (
     <div className="container">
+      <div className="bg-animation">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
+      </div>
       <div className="dashboard-card">
         <button
           className="theme-toggle"
