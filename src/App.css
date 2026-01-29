@@ -33,11 +33,32 @@ header {
 }
 
 h1 {
-  font-size: 2rem;
-  background: linear-gradient(to right, #ffffff, #f59e0b);
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent-secondary) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.logo-placeholder {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  background: var(--accent-color);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 16px rgba(26, 79, 156, 0.2);
+}
+
+.logo-placeholder svg {
+  width: 32px;
+  height: 32px;
 }
 
 .subtitle {
@@ -73,7 +94,7 @@ select {
 
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f59e0b' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a4f9c' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
@@ -90,7 +111,7 @@ select:focus {
   outline: none;
   border-color: var(--accent-color);
   background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+  box-shadow: 0 0 0 4px rgba(26, 79, 156, 0.15);
 }
 
 /* Grid de apartamentos */
@@ -135,14 +156,14 @@ select:focus {
 
 .apartment-card:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(26, 79, 156, 0.4);
   transform: translateY(-2px);
 }
 
 .apartment-card.active {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.1));
+  background: linear-gradient(135deg, rgba(26, 79, 156, 0.15), rgba(44, 108, 180, 0.05));
   border-color: var(--accent-color);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--accent-color);
 }
 
 .apartment-card.active::before {
@@ -167,6 +188,7 @@ select:focus {
   color: var(--text-secondary);
   line-height: 1.4;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -180,22 +202,26 @@ select:focus {
 .btn-primary {
   width: 100%;
   background: var(--accent-color);
-  color: #000;
+  color: white;
   border: none;
   border-radius: 12px;
   padding: 1rem;
   font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   margin-top: 1rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(26, 79, 156, 0.3);
 }
 
 .btn-primary:hover {
   background: var(--accent-secondary);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 8px 25px rgba(26, 79, 156, 0.4);
 }
 
 .btn-primary:active {
@@ -214,8 +240,8 @@ select:focus {
   height: 20px;
   top: calc(50% - 10px);
   left: calc(50% - 10px);
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #000;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
