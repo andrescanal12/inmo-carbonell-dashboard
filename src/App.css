@@ -6,13 +6,14 @@
 
 .dashboard-card {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: 2.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px var(--shadow-color);
   animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 @keyframes slideUp {
@@ -35,31 +36,55 @@ header {
 h1 {
   font-size: 2.25rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -1px;
 }
 
-.logo-placeholder {
-  width: 64px;
-  height: 64px;
+.logo-container {
+  width: 140px;
+  height: auto;
   margin: 0 auto 1.5rem;
-  background: var(--accent-color);
-  border-radius: 16px;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.light-mode .logo-container {
+  filter: none;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow: 0 8px 16px rgba(26, 79, 156, 0.2);
+  gap: 0.5rem;
+  z-index: 10;
 }
 
-.logo-placeholder svg {
-  width: 32px;
-  height: 32px;
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
+
+.light-mode .theme-toggle {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+
 
 .subtitle {
   color: var(--text-secondary);
