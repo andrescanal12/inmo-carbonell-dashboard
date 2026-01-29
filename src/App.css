@@ -111,7 +111,7 @@ label {
 input,
 select {
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 0.75rem 1rem;
@@ -129,9 +129,8 @@ select {
 }
 
 select option {
-  background: #1a1a1a;
+  background: var(--bg-color);
   color: var(--text-primary);
-  padding: 0.5rem;
 }
 
 input:focus,
