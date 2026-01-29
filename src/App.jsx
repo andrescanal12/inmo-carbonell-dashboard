@@ -3,6 +3,7 @@ import './App.css';
 
 const APARTMENTS = [
   { ref: "1", address: "C/ SAN TELMO, 4 – 1º IZQUIERDA - INTERIOR 03002 ALICANTE" },
+  { ref: "2", address: "PASAJE SAN FRANCISCO JAVIER, 2 - 3º B" },
   { ref: "3", address: "AVDA. CONDOMINA, 19 C.R. LAS TORRES C - 8 C-2" },
   { ref: "4", address: "CAMINO DE RONDA, 15 - 3º DCHA. 1" },
   { ref: "5", address: "AVDA. BRUSELAS, 21-1°C. INTUR BLOQUE H6-6°-371 1" },
