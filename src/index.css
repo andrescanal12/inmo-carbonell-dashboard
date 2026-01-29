@@ -12,16 +12,16 @@
 }
 
 .light-mode {
-  --bg-color: #f0f4f8;
-  --card-bg: rgba(255, 255, 255, 0.8);
+  --bg-color: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.7);
   --accent-color: #1a4f9c;
   --accent-secondary: #0e2d5c;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --glass-border: rgba(26, 79, 156, 0.1);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --glass-border: rgba(26, 79, 156, 0.08);
   --success-color: #059669;
   --error-color: #dc2626;
-  --shadow-color: rgba(26, 79, 156, 0.1);
+  --shadow-color: rgba(15, 23, 42, 0.08);
 }
 
 * {
@@ -110,8 +110,26 @@ body {
 }
 
 .light-mode .bg-animation {
-  opacity: 0.3;
-  filter: blur(120px);
+  opacity: 0.8;
+  filter: blur(140px);
+}
+
+.light-mode .blob-1 {
+  background: #dbeafe;
+  /* Soft blue */
+  opacity: 0.6;
+}
+
+.light-mode .blob-2 {
+  background: #e0e7ff;
+  /* Soft indigo */
+  opacity: 0.5;
+}
+
+.light-mode .blob-3 {
+  background: #f1f5f9;
+  /* Soft white/gray */
+  opacity: 0.4;
 }
 
 
