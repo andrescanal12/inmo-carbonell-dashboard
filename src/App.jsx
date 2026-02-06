@@ -157,6 +157,7 @@ function App() {
               ) : selectedApartment.ref === "31" ? (
                 // Periodos especiales para apartamento #31 (del 06 al 05)
                 <>
+                  <option value="Del 06 de Diciembre de 2025 al 05 de Enero de 2026">Del 06 de Diciembre de 2025 al 05 de Enero de 2026</option>
                   <option value="Del 06 de Enero al 05 de Febrero de 2026">Del 06 de Enero al 05 de Febrero de 2026</option>
                   <option value="Del 06 de Febrero al 05 de Marzo de 2026">Del 06 de Febrero al 05 de Marzo de 2026</option>
                   <option value="Del 06 de Marzo al 05 de Abril de 2026">Del 06 de Marzo al 05 de Abril de 2026</option>
