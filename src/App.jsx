@@ -16,7 +16,8 @@ const APARTMENTS = [
   { ref: "15", address: "C/ PRIMITIVO PEREZ, 3 – 1º PTA. 2. 03010 ALICANTE" },
   { ref: "19", address: "ARTILLEROS, 3 – 2º 03002 ALICANTE" },
   { ref: "20", address: "POETA VILA Y BLANCO, 4 – 10º - 168 03003 ALICANTE" },
-  { ref: "23", address: "C/ SAN TELMO, 4 – 1º DERECHA - EXTERIOR" }
+  { ref: "23", address: "C/ SAN TELMO, 4 – 1º DERECHA - EXTERIOR" },
+  { ref: "31", address: "C/ SAN CARLOS, 130 - 2º IZQ" }
 ];
 
 function App() {
@@ -152,6 +153,22 @@ function App() {
                   <option value="Del 15 de Octubre al 14 de Noviembre de 2026">Del 15 de Octubre al 14 de Noviembre de 2026</option>
                   <option value="Del 15 de Noviembre al 14 de Diciembre de 2026">Del 15 de Noviembre al 14 de Diciembre de 2026</option>
                   <option value="Del 15 de Diciembre de 2026 al 14 de Enero de 2027">Del 15 de Diciembre de 2026 al 14 de Enero de 2027</option>
+                </>
+              ) : selectedApartment.ref === "31" ? (
+                // Periodos especiales para apartamento #31 (del 06 al 05)
+                <>
+                  <option value="Del 06 de Enero al 05 de Febrero de 2026">Del 06 de Enero al 05 de Febrero de 2026</option>
+                  <option value="Del 06 de Febrero al 05 de Marzo de 2026">Del 06 de Febrero al 05 de Marzo de 2026</option>
+                  <option value="Del 06 de Marzo al 05 de Abril de 2026">Del 06 de Marzo al 05 de Abril de 2026</option>
+                  <option value="Del 06 de Abril al 05 de Mayo de 2026">Del 06 de Abril al 05 de Mayo de 2026</option>
+                  <option value="Del 06 de Mayo al 05 de Junio de 2026">Del 06 de Mayo al 05 de Junio de 2026</option>
+                  <option value="Del 06 de Junio al 05 de Julio de 2026">Del 06 de Junio al 05 de Julio de 2026</option>
+                  <option value="Del 06 de Julio al 05 de Agosto de 2026">Del 06 de Julio al 05 de Agosto de 2026</option>
+                  <option value="Del 06 de Agosto al 05 de Septiembre de 2026">Del 06 de Agosto al 05 de Septiembre de 2026</option>
+                  <option value="Del 06 de Septiembre al 05 de Octubre de 2026">Del 06 de Septiembre al 05 de Octubre de 2026</option>
+                  <option value="Del 06 de Octubre al 05 de Noviembre de 2026">Del 06 de Octubre al 05 de Noviembre de 2026</option>
+                  <option value="Del 06 de Noviembre al 05 de Diciembre de 2026">Del 06 de Noviembre al 05 de Diciembre de 2026</option>
+                  <option value="Del 06 de Diciembre de 2026 al 05 de Enero de 2027">Del 06 de Diciembre de 2026 al 05 de Enero de 2027</option>
                 </>
               ) : (
                 // Periodos normales para otros apartamentos (del 01 al 31)
