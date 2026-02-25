@@ -2,12 +2,6 @@
     "buildCommand": "vite build",
     "outputDirectory": "dist",
     "framework": "vite",
-    "crons": [
-        {
-            "path": "/api/process",
-            "schedule": "*/10 * * * *"
-        }
-    ],
     "headers": [
         {
             "source": "/api/(.*)",
