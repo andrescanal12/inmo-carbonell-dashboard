@@ -58,6 +58,7 @@ export default async function handler(req, res) {
         console.log('💾 Guardando nuevo estado en Drive...');
         await saveProcessedIdsToDrive(drive, BASE_FOLDER_ID, processedIds, stateFileId);
 
+        console.log('✅ Proceso finalizado con éxito');
         return res.status(200).json({
             processed: successCount,
             remaining: Math.max(0, newFiles.length - batch.length),
@@ -65,7 +66,12 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('💀 Error fatal:', error.message);
-        return res.status(500).json({ error: error.message });
+        console.error('💀 ERROR FATAL EN API/PROCESS:', error);
+        // Devolvemos el mensaje de error real para verlo en el navegador
+        return res.status(500).json({
+            error: error.message,
+            stack: error.stack,
+            step: 'fatal_catch'
+        });
     }
 }
