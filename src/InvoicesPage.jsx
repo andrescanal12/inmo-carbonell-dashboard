@@ -118,6 +118,36 @@ export default function InvoicesPage() {
         }
     };
 
+    const [processing, setProcessing] = useState(false);
+    const [processMsg, setProcessMsg] = useState('');
+
+    const runProcess = async () => {
+        setProcessing(true);
+        setProcessMsg('');
+        try {
+            const url = window.location.hostname === 'localhost'
+                ? 'http://localhost:3001/api/process'
+                : '/api/process';
+
+            const res = await fetch(url, { method: 'POST' });
+            const data = await res.json();
+
+            if (data.processed > 0) {
+                setProcessMsg(`✅ Se han procesado ${data.processed} facturas.`);
+                fetchTree(); // Recargar árbol
+            } else if (data.remaining > 0) {
+                setProcessMsg(`⚙️ Batch completado. Quedan ${data.remaining} pendientes.`);
+            } else {
+                setProcessMsg('📭 No había facturas pendientes.');
+            }
+        } catch (err) {
+            setProcessMsg('❌ Error al procesar: ' + err.message);
+        } finally {
+            setProcessing(false);
+            setTimeout(() => setProcessMsg(''), 5000);
+        }
+    };
+
     useEffect(() => {
         fetchTree();
     }, []);
@@ -133,17 +163,24 @@ export default function InvoicesPage() {
                         <span className="invoices-title-icon">📂</span>
                         Facturas Generadas
                     </h2>
-                    {lastUpdated && (
+                    {lastUpdated && !processMsg && (
                         <p className="invoices-subtitle">Actualizado a las {lastUpdated}</p>
+                    )}
+                    {processMsg && (
+                        <p className="invoices-subtitle" style={{ color: processMsg.startsWith('❌') ? '#f87171' : '#34d399', fontWeight: 'bold' }}>
+                            {processMsg}
+                        </p>
                     )}
                 </div>
                 <div className="invoices-header-right">
-                    {!loading && !error && (
-                        <div className="invoices-stat">
-                            <span className="stat-number">{totalFacturas}</span>
-                            <span className="stat-label">facturas en Drive</span>
-                        </div>
-                    )}
+                    <button
+                        className="btn-refresh"
+                        onClick={runProcess}
+                        disabled={processing || loading}
+                        style={{ background: 'var(--accent-color)', color: 'white', border: 'none' }}
+                    >
+                        {processing ? '⚙️ Procesando...' : '🚀 Procesar Pendientes'}
+                    </button>
                     <button className="btn-refresh" onClick={fetchTree} disabled={loading}>
                         <span style={{ display: 'inline-block', animation: loading ? 'spin 1s linear infinite' : 'none' }}>↻</span>
                         {loading ? ' Cargando...' : ' Actualizar'}
