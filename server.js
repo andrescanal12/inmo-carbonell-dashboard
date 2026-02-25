@@ -61,6 +61,55 @@ app.get('/api/drive-files', async (req, res) => {
     }
 });
 
+// ─── Endpoint: Procesar facturas pendientes ───────────────
+app.post('/api/process', async (req, res) => {
+    try {
+        console.log('🚀 Trigger manual de procesamiento recibido');
+
+        const { authenticate } = await import('./invoice-automation/src/auth.js');
+        const { createDriveService, getProcessedIdsFromDrive, listNewPDFs, downloadFile, ensureFolderStructure, moveAndRename, saveProcessedIdsToDrive } = await import('./invoice-automation/src/drive.js');
+        const { createOpenAIClient, extractInvoiceData } = await import('./invoice-automation/src/openai.js');
+        const { parsePeriodo, buildFileName } = await import('./invoice-automation/src/utils.js');
+
+        const auth = await authenticate();
+        const drive = createDriveService(auth);
+
+        // Cargar variables de entorno si están en .env
+        const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        const SOURCE_ID = '1_0An6lY_M97fKbeG_4B5Tf7z4p_YJ2_b';
+        const BASE_ID = '1bj2CPwy32G_rBt5YPPXoFGUz3fiANIMw';
+
+        const openai = createOpenAIClient(OPENAI_API_KEY);
+
+        const { ids, fileId } = await getProcessedIdsFromDrive(drive, BASE_ID);
+        const newFiles = await listNewPDFs(drive, SOURCE_ID, ids);
+
+        let processed = 0;
+        const batch = newFiles.slice(0, 5);
+
+        for (const file of batch) {
+            try {
+                const pdf = await downloadFile(drive, file.id);
+                const data = await extractInvoiceData(openai, pdf, file.name);
+                const { año, mesNombre } = parsePeriodo(data.PERIODO_DE_ARRENDAMIENCE || data.PERIODO_DE_ARRENDAMIENTO);
+                const newName = buildFileName(data.direccion, data.factura_numero, data.PERIODO_DE_ARRENDAMIENCE || data.PERIODO_DE_ARRENDAMIENTO);
+                const destId = await ensureFolderStructure(drive, BASE_ID, año, data.direccion, mesNombre);
+                await moveAndRename(drive, file.id, newName, destId, SOURCE_ID);
+                ids.add(file.id);
+                processed++;
+            } catch (err) {
+                console.error(`❌ Error en archivo ${file.name}:`, err.message);
+            }
+        }
+
+        await saveProcessedIdsToDrive(drive, BASE_ID, ids, fileId);
+        res.json({ processed, remaining: Math.max(0, newFiles.length - processed) });
+    } catch (error) {
+        console.error('❌ Error fatal procesando:', error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ─── Endpoint: Crear factura (n8n) ────────────────────────
 app.post('/api/create-invoice', async (req, res) => {
     const { apartment, refNumber, invNumber, period, transferDate } = req.body;
