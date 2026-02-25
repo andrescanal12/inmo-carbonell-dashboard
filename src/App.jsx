@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import InvoicesPage from './InvoicesPage.jsx';
 
 const APARTMENTS = [
   { ref: "1", address: "C/ SAN TELMO, 4 – 1º IZQUIERDA - INTERIOR 03002 ALICANTE" },
@@ -21,6 +22,7 @@ const APARTMENTS = [
 ];
 
 function App() {
+  const [activeTab, setActiveTab] = useState('create');
   const [selectedApartment, setSelectedApartment] = useState(APARTMENTS[0]);
   const [invNumber, setInvNumber] = useState('');
   const [period, setPeriod] = useState('');
@@ -99,7 +101,26 @@ function App() {
           <p className="subtitle">Gestión de Facturación Automatizada</p>
         </header>
 
-        <form onSubmit={triggerWebhook}>
+        {/* Navegación de pestañas */}
+        <nav className="tab-nav">
+          <button
+            className={`tab-btn ${activeTab === 'create' ? 'active' : ''}`}
+            onClick={() => setActiveTab('create')}
+          >
+            ✏️ Crear Factura
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'invoices' ? 'active' : ''}`}
+            onClick={() => setActiveTab('invoices')}
+          >
+            📂 Facturas Generadas
+          </button>
+        </nav>
+
+        {/* Vista de Facturas Generadas */}
+        {activeTab === 'invoices' && <InvoicesPage />}
+
+        {activeTab === 'create' && <form onSubmit={triggerWebhook}>
           <div className="form-group">
             <label>Seleccionar Piso</label>
             <div className="apartment-grid">
@@ -209,9 +230,9 @@ function App() {
           >
             {status === 'loading' ? 'Generando...' : 'Crear Factura'}
           </button>
-        </form>
+        </form>}
 
-        {message && (
+        {activeTab === 'create' && message && (
           <div className={`status-banner ${status}`}>
             {message}
           </div>
