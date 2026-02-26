@@ -32,7 +32,23 @@ export async function authenticate() {
         throw new Error('❌ No se encontró credentials.json ni la variable GOOGLE_CREDENTIALS.');
     }
 
+    // --- DETECCIÓN DE CUENTA DE SERVICIO (ROBOT) ---
+    if (keys.type === 'service_account') {
+        console.log('🤖 Autenticando con Cuenta de Servicio (Robot)');
+        const auth = new google.auth.JWT(
+            keys.client_email,
+            null,
+            keys.private_key,
+            SCOPES
+        );
+        await auth.authorize();
+        return auth;
+    }
+
+    // --- FLUJO OAUTH2 (CUENTA PERSONAL) ---
     const key = keys.installed || keys.web;
+    if (!key) throw new Error('❌ El formato de GOOGLE_CREDENTIALS no es válido (falta "installed" o "web").');
+
     const oauth2Client = new google.auth.OAuth2(
         key.client_id,
         key.client_secret,
@@ -56,7 +72,7 @@ export async function authenticate() {
                 const { credentials } = await oauth2Client.refreshAccessToken();
                 oauth2Client.setCredentials(credentials);
 
-                // En local lo guardamos, en Vercel no podemos (pero el cliente ya lo tiene en memoria para esta ejecución)
+                // En local lo guardamos, en Vercel no podemos
                 if (fs.existsSync(TOKEN_PATH)) {
                     fs.writeFileSync(TOKEN_PATH, JSON.stringify(credentials, null, 2));
                 }
@@ -68,7 +84,7 @@ export async function authenticate() {
             }
         }
 
-        console.log('✅ Autenticado con éxito');
+        console.log('✅ Autenticado con éxito (OAuth2)');
         return oauth2Client;
     }
 
