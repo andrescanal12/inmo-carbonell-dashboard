@@ -22,6 +22,7 @@ Devuelve SOLO un objeto JSON válido con esas claves. Sin texto adicional.
 REGLAS:
 - Fechas: formato YYYY-MM-DD. Si no hay fecha de emisión, usa ${today}.
 - Importe: solo números (sin “€” ni separadores de miles). Si no hay dato, deja "".
+- direccion: Extrae SOLO la calle/avenida, el número y el piso (Ej: "POETA VILA Y BLANCO, 4 - 10º"). Omite EXPRESAMENTE códigos postales, referencias extra, o guiones con números finales (ej: "- 168").
 - Si falta cualquier campo, deja "" (cadena vacía).
 - No inventes datos.
 
