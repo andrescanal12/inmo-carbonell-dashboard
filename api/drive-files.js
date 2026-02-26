@@ -1,8 +1,21 @@
 import { google } from 'googleapis';
 
 // ─── Auth desde variables de entorno ─────────────────────
-function getAuthClient() {
+async function getAuthClient() {
     const keys = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+
+    if (keys.type === 'service_account') {
+        const SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
+        const auth = new google.auth.JWT(
+            keys.client_email,
+            null,
+            keys.private_key,
+            SCOPES
+        );
+        await auth.authorize();
+        return auth;
+    }
+
     const token = JSON.parse(process.env.GOOGLE_TOKEN);
     const key = keys.installed || keys.web;
 
@@ -66,14 +79,14 @@ export default async function handler(req, res) {
     }
 
     try {
-        if (!process.env.GOOGLE_CREDENTIALS || !process.env.GOOGLE_TOKEN) {
-            throw new Error('Variables GOOGLE_CREDENTIALS / GOOGLE_TOKEN no configuradas');
+        if (!process.env.GOOGLE_CREDENTIALS) {
+            throw new Error('Variable GOOGLE_CREDENTIALS no configurada');
         }
 
         const BASE_FOLDER_ID = process.env.DRIVE_BASE_FOLDER_ID;
         if (!BASE_FOLDER_ID) throw new Error('DRIVE_BASE_FOLDER_ID no configurado');
 
-        const authClient = getAuthClient();
+        const authClient = await getAuthClient();
         const drive = google.drive({ version: 'v3', auth: authClient });
 
         const tree = await buildTree(drive, BASE_FOLDER_ID);
