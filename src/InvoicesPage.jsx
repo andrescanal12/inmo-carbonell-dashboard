@@ -27,7 +27,7 @@ const ChevronIcon = ({ open }) => (
 
 // ─── Nodo recursivo del árbol ──────────────────────────────
 function TreeNode({ node, depth = 0 }) {
-    const [open, setOpen] = useState(depth < 2); // Años y Direcciones abiertos por defecto
+    const [open, setOpen] = useState(false); // Todas las carpetas cerradas por defecto
 
     if (node.type === 'file') {
         return (
