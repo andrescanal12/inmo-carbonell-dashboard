@@ -2,31 +2,44 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import InvoicesPage from './InvoicesPage.jsx';
 
-const APARTMENTS = [
-  { ref: "1", address: "C/ SAN TELMO, 4 – 1º IZQUIERDA - INTERIOR 03002 ALICANTE" },
-  { ref: "2", address: "PASAJE SAN FRANCISCO JAVIER, 2 - 3º B" },
-  { ref: "3", address: "AVDA. CONDOMINA, 19 C.R. LAS TORRES C - 8 C-2" },
-  { ref: "4", address: "CAMINO DE RONDA, 15 - 3º DCHA. 1" },
-  { ref: "5", address: "AVDA. BRUSELAS, 21-1°C. INTUR BLOQUE H6-6°-371 1" },
-  { ref: "6", address: "C/ SAN VICENTE, 37 BAJO IZQ." },
-  { ref: "8", address: "C/ GENERAL PRIMO DE RIVERA, 3 LOCAL 1 03002 ALICANTE" },
-  { ref: "9", address: "C/ TEATRO, 27 – 2º DCHA. 03001 ALICANTE" },
-  { ref: "10", address: "LA RAMBLA DE MENDEZ NUÑEZ, 36 - 1º C" },
-  { ref: "11", address: "GLORIETA REINO UNIDO,6 – BLOQUE 5 - 3º PUERTA 8 URB. ALICANTE HILLS 03008 ALICANTE" },
-  { ref: "14", address: "LA RAMBLA, 36 - 2º B" },
-  { ref: "15", address: "C/ PRIMITIVO PEREZ, 3 – 1º PTA. 2. 03010 ALICANTE" },
-  { ref: "19", address: "ARTILLEROS, 3 – 2º 03002 ALICANTE" },
-  { ref: "20", address: "POETA VILA Y BLANCO, 4 – 10º - 168 03003 ALICANTE" },
-  { ref: "23", address: "C/ SAN TELMO, 4 – 1º DERECHA - EXTERIOR" },
-  { ref: "31", address: "C/ SAN CARLOS, 130 - 2º IZQ" }
+const DEFAULT_APARTMENTS = [
+  { ref: "1", address: "C/ SAN TELMO, 4 – 1º IZQUIERDA - INTERIOR 03002 ALICANTE", periodType: "1_31" },
+  { ref: "2", address: "PASAJE SAN FRANCISCO JAVIER, 2 - 3º B", periodType: "1_31" },
+  { ref: "3", address: "AVDA. CONDOMINA, 19 C.R. LAS TORRES C - 8 C-2", periodType: "1_31" },
+  { ref: "4", address: "CAMINO DE RONDA, 15 - 3º DCHA. 1", periodType: "1_31" },
+  { ref: "5", address: "AVDA. BRUSELAS, 21-1°C. INTUR BLOQUE H6-6°-371 1", periodType: "1_31" },
+  { ref: "6", address: "C/ SAN VICENTE, 37 BAJO IZQ.", periodType: "1_31" },
+  { ref: "8", address: "C/ GENERAL PRIMO DE RIVERA, 3 LOCAL 1 03002 ALICANTE", periodType: "15_14" },
+  { ref: "9", address: "C/ TEATRO, 27 – 2º DCHA. 03001 ALICANTE", periodType: "1_31" },
+  { ref: "10", address: "LA RAMBLA DE MENDEZ NUÑEZ, 36 - 1º C", periodType: "1_31" },
+  { ref: "11", address: "GLORIETA REINO UNIDO,6 – BLOQUE 5 - 3º PUERTA 8 URB. ALICANTE HILLS 03008 ALICANTE", periodType: "1_31" },
+  { ref: "14", address: "LA RAMBLA, 36 - 2º B", periodType: "1_31" },
+  { ref: "15", address: "C/ PRIMITIVO PEREZ, 3 – 1º PTA. 2. 03010 ALICANTE", periodType: "1_31" },
+  { ref: "19", address: "ARTILLEROS, 3 – 2º 03002 ALICANTE", periodType: "1_31" },
+  { ref: "20", address: "POETA VILA Y BLANCO, 4 – 10º - 168 03003 ALICANTE", periodType: "1_31" },
+  { ref: "23", address: "C/ SAN TELMO, 4 – 1º DERECHA - EXTERIOR", periodType: "1_31" },
+  { ref: "31", address: "C/ SAN CARLOS, 130 - 2º IZQ", periodType: "06_05" },
+  { ref: "32", address: "C/ DEPORTISTA RAMÓN MENDIZABAL, 10 - 3º IZQ.", periodType: "1_31" }
 ];
 
 function App() {
   const [activeTab, setActiveTab] = useState('create');
-  const [selectedApartment, setSelectedApartment] = useState(APARTMENTS[0]);
+
+  // Pisos
+  const [customApartments, setCustomApartments] = useState([]);
+  const [allApartments, setAllApartments] = useState(DEFAULT_APARTMENTS);
+  const [selectedApartment, setSelectedApartment] = useState(DEFAULT_APARTMENTS[0]);
+
+  // Nuevo piso
+  const [newAptAddress, setNewAptAddress] = useState('');
+  const [newAptPeriod, setNewAptPeriod] = useState('1_31');
+
+  // Factura
   const [invNumber, setInvNumber] = useState('');
   const [period, setPeriod] = useState('');
   const [transferDate, setTransferDate] = useState('');
+
+  // UI
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
   const [isLightMode, setIsLightMode] = useState(false);
@@ -39,12 +52,51 @@ function App() {
     }
   }, [isLightMode]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('customApartments');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setCustomApartments(parsed);
+      setAllApartments([...DEFAULT_APARTMENTS, ...parsed]);
+    }
+  }, []);
+
+  const handleAddApartment = (e) => {
+    e.preventDefault();
+    if (!newAptAddress.trim()) return;
+
+    const newApt = {
+      ref: `C-${Date.now()}`,
+      address: newAptAddress.trim().toUpperCase(),
+      periodType: newAptPeriod
+    };
+
+    const updatedCustom = [...customApartments, newApt];
+    setCustomApartments(updatedCustom);
+    setAllApartments([...DEFAULT_APARTMENTS, ...updatedCustom]);
+    localStorage.setItem('customApartments', JSON.stringify(updatedCustom));
+
+    setNewAptAddress('');
+    setMessage('✅ Piso añadido correctamente.');
+    setStatus('success');
+    setTimeout(() => { setMessage(''); setStatus('idle'); }, 3000);
+  };
+
+  const removeCustomApartment = (refToRemove) => {
+    const updatedCustom = customApartments.filter(a => a.ref !== refToRemove);
+    setCustomApartments(updatedCustom);
+    setAllApartments([...DEFAULT_APARTMENTS, ...updatedCustom]);
+    localStorage.setItem('customApartments', JSON.stringify(updatedCustom));
+    if (selectedApartment.ref === refToRemove) {
+      setSelectedApartment(DEFAULT_APARTMENTS[0]);
+    }
+  };
+
   const triggerWebhook = async (e) => {
     e.preventDefault();
     setStatus('loading');
     setMessage('');
 
-    // Use localhost in development, relative path in production
     const webhookUrl = window.location.hostname === 'localhost'
       ? 'http://localhost:3001/api/create-invoice'
       : '/api/create-invoice';
@@ -52,9 +104,7 @@ function App() {
     try {
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           apartment: selectedApartment.address,
           refNumber: selectedApartment.ref,
@@ -78,6 +128,10 @@ function App() {
       setMessage(error.message || 'Hubo un error al generar la factura. Inténtalo de nuevo.');
     }
   };
+
+  const currentPeriodType = selectedApartment.periodType ||
+    (selectedApartment.ref === "8" ? "15_14" :
+      (selectedApartment.ref === "31" ? "06_05" : "1_31"));
 
   return (
     <div className="container">
@@ -107,7 +161,7 @@ function App() {
             className={`tab-btn ${activeTab === 'create' ? 'active' : ''}`}
             onClick={() => setActiveTab('create')}
           >
-            ✏️ Crear Factura
+            ✏️ Facturar
           </button>
           <button
             className={`tab-btn ${activeTab === 'invoices' ? 'active' : ''}`}
@@ -115,16 +169,70 @@ function App() {
           >
             📂 Facturas Generadas
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'addApt' ? 'active' : ''}`}
+            onClick={() => setActiveTab('addApt')}
+          >
+            ➕ Añadir Piso
+          </button>
         </nav>
 
         {/* Vista de Facturas Generadas */}
         {activeTab === 'invoices' && <InvoicesPage />}
 
+        {/* Vista de Añadir Piso */}
+        {activeTab === 'addApt' && (
+          <form onSubmit={handleAddApartment}>
+            <div className="form-group">
+              <label htmlFor="newAptAddress">Dirección Completa del Piso</label>
+              <input
+                id="newAptAddress"
+                type="text"
+                placeholder="Ej. C/ MAYOR, 15 - 2º B"
+                value={newAptAddress}
+                onChange={(e) => setNewAptAddress(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="newAptPeriod">Regla de Periodo de Alquiler</label>
+              <select
+                id="newAptPeriod"
+                value={newAptPeriod}
+                onChange={(e) => setNewAptPeriod(e.target.value)}
+                required
+              >
+                <option value="1_31">Mes natural (Del 1 al 31)</option>
+                <option value="15_14">A mitad de mes (Del 15 al 14 del mes sig.)</option>
+                <option value="06_05">A principio de mes (Del 6 al 5 del mes sig.)</option>
+              </select>
+            </div>
+            <button type="submit" className="btn-primary" style={{ background: '#10b981', boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)' }}>
+              Guardar Nuevo Piso
+            </button>
+
+            {customApartments.length > 0 && (
+              <div style={{ marginTop: '2rem' }}>
+                <label>Pisos Añadidos Manualmente</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  {customApartments.map(apt => (
+                    <div key={apt.ref} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.75rem', borderRadius: '8px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>{apt.address}</span>
+                      <button type="button" onClick={() => removeCustomApartment(apt.ref)} style={{ background: 'transparent', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '1rem' }}>🗑️</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </form>
+        )}
+
+        {/* Vista de Crear Factura */}
         {activeTab === 'create' && <form onSubmit={triggerWebhook}>
           <div className="form-group">
             <label>Seleccionar Piso</label>
             <div className="apartment-grid">
-              {APARTMENTS.map((apt) => (
+              {allApartments.map((apt) => (
                 <button
                   key={apt.ref}
                   type="button"
@@ -159,8 +267,8 @@ function App() {
               required
             >
               <option value="">Seleccionar periodo...</option>
-              {selectedApartment.ref === "8" ? (
-                // Periodos especiales para apartamento #8 (del 15 al 14)
+
+              {currentPeriodType === "15_14" ? (
                 <>
                   <option value="Del 15 de Enero al 14 de Febrero de 2026">Del 15 de Enero al 14 de Febrero de 2026</option>
                   <option value="Del 15 de Febrero al 14 de Marzo de 2026">Del 15 de Febrero al 14 de Marzo de 2026</option>
@@ -175,8 +283,7 @@ function App() {
                   <option value="Del 15 de Noviembre al 14 de Diciembre de 2026">Del 15 de Noviembre al 14 de Diciembre de 2026</option>
                   <option value="Del 15 de Diciembre de 2026 al 14 de Enero de 2027">Del 15 de Diciembre de 2026 al 14 de Enero de 2027</option>
                 </>
-              ) : selectedApartment.ref === "31" ? (
-                // Periodos especiales para apartamento #31 (del 06 al 05)
+              ) : currentPeriodType === "06_05" ? (
                 <>
                   <option value="Del 06 de Diciembre de 2025 al 05 de Enero de 2026">Del 06 de Diciembre de 2025 al 05 de Enero de 2026</option>
                   <option value="Del 06 de Enero al 05 de Febrero de 2026">Del 06 de Enero al 05 de Febrero de 2026</option>
@@ -193,7 +300,6 @@ function App() {
                   <option value="Del 06 de Diciembre de 2026 al 05 de Enero de 2027">Del 06 de Diciembre de 2026 al 05 de Enero de 2027</option>
                 </>
               ) : (
-                // Periodos normales para otros apartamentos (del 01 al 31)
                 <>
                   <option value="Del 01 al 31 de Enero de 2026">Del 01 al 31 de Enero de 2026</option>
                   <option value="Del 01 al 28 de Febrero de 2026">Del 01 al 28 de Febrero de 2026</option>
