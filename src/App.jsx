@@ -22,21 +22,32 @@ const DEFAULT_APARTMENTS = [
   { ref: "21", address: "C/ DEPORTISTA RAMÓN MENDIZABAL, 10 - 3º IZQ.", periodType: "1_31" }
 ];
 
+const sortApartments = (apartments) => {
+  return [...apartments].sort((a, b) => {
+    const numA = parseInt(a.ref.toString().replace(/\D/g, ''), 10) || 0;
+    const numB = parseInt(b.ref.toString().replace(/\D/g, ''), 10) || 0;
+    return numA - numB;
+  });
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState('create');
 
   // Pisos
   const [customApartments, setCustomApartments] = useState([]);
-  const [allApartments, setAllApartments] = useState(DEFAULT_APARTMENTS);
-  const [selectedApartment, setSelectedApartment] = useState(DEFAULT_APARTMENTS[0]);
+  const [allApartments, setAllApartments] = useState(sortApartments(DEFAULT_APARTMENTS));
+  const [selectedApartment, setSelectedApartment] = useState(sortApartments(DEFAULT_APARTMENTS)[0]);
 
   // Nuevo piso
+  const [newAptRef, setNewAptRef] = useState('');
   const [newAptAddress, setNewAptAddress] = useState('');
   const [newAptPeriod, setNewAptPeriod] = useState('1_31');
 
   // Factura
   const [invNumber, setInvNumber] = useState('');
   const [period, setPeriod] = useState('');
+  const [customPeriodStart, setCustomPeriodStart] = useState('');
+  const [customPeriodEnd, setCustomPeriodEnd] = useState('');
   const [transferDate, setTransferDate] = useState('');
 
   // UI
@@ -57,25 +68,26 @@ function App() {
     if (saved) {
       const parsed = JSON.parse(saved);
       setCustomApartments(parsed);
-      setAllApartments([...DEFAULT_APARTMENTS, ...parsed]);
+      setAllApartments(sortApartments([...DEFAULT_APARTMENTS, ...parsed]));
     }
   }, []);
 
   const handleAddApartment = (e) => {
     e.preventDefault();
-    if (!newAptAddress.trim()) return;
+    if (!newAptAddress.trim() || !newAptRef.trim()) return;
 
     const newApt = {
-      ref: `C-${Date.now()}`,
+      ref: newAptRef.trim(),
       address: newAptAddress.trim().toUpperCase(),
       periodType: newAptPeriod
     };
 
     const updatedCustom = [...customApartments, newApt];
     setCustomApartments(updatedCustom);
-    setAllApartments([...DEFAULT_APARTMENTS, ...updatedCustom]);
+    setAllApartments(sortApartments([...DEFAULT_APARTMENTS, ...updatedCustom]));
     localStorage.setItem('customApartments', JSON.stringify(updatedCustom));
 
+    setNewAptRef('');
     setNewAptAddress('');
     setMessage('✅ Piso añadido correctamente.');
     setStatus('success');
@@ -85,10 +97,10 @@ function App() {
   const removeCustomApartment = (refToRemove) => {
     const updatedCustom = customApartments.filter(a => a.ref !== refToRemove);
     setCustomApartments(updatedCustom);
-    setAllApartments([...DEFAULT_APARTMENTS, ...updatedCustom]);
+    setAllApartments(sortApartments([...DEFAULT_APARTMENTS, ...updatedCustom]));
     localStorage.setItem('customApartments', JSON.stringify(updatedCustom));
     if (selectedApartment.ref === refToRemove) {
-      setSelectedApartment(DEFAULT_APARTMENTS[0]);
+      setSelectedApartment(sortApartments(DEFAULT_APARTMENTS)[0]);
     }
   };
 
@@ -96,6 +108,21 @@ function App() {
     e.preventDefault();
     setStatus('loading');
     setMessage('');
+
+    let finalPeriod = period;
+    if (period === 'custom') {
+      if (!customPeriodStart || !customPeriodEnd) {
+        setStatus('error');
+        setMessage('Debes seleccionar las fechas de inicio y fin del periodo');
+        return;
+      }
+      const dateStart = new Date(customPeriodStart);
+      const dateEnd = new Date(customPeriodEnd);
+      const options = { day: '2-digit', month: 'long', year: 'numeric' };
+      const startStr = dateStart.toLocaleDateString('es-ES', options);
+      const endStr = dateEnd.toLocaleDateString('es-ES', options);
+      finalPeriod = `Del ${startStr} al ${endStr}`;
+    }
 
     const webhookUrl = window.location.hostname === 'localhost'
       ? 'http://localhost:3001/api/create-invoice'
@@ -109,7 +136,7 @@ function App() {
           apartment: selectedApartment.address,
           refNumber: selectedApartment.ref,
           invNumber,
-          period,
+          period: finalPeriod,
           transferDate
         }),
       });
@@ -183,6 +210,17 @@ function App() {
         {/* Vista de Añadir Piso */}
         {activeTab === 'addApt' && (
           <form onSubmit={handleAddApartment}>
+            <div className="form-group">
+              <label htmlFor="newAptRef">Número de Referencia</label>
+              <input
+                id="newAptRef"
+                type="text"
+                placeholder="Ej. 33"
+                value={newAptRef}
+                onChange={(e) => setNewAptRef(e.target.value)}
+                required
+              />
+            </div>
             <div className="form-group">
               <label htmlFor="newAptAddress">Dirección Completa del Piso</label>
               <input
@@ -267,6 +305,7 @@ function App() {
               required
             >
               <option value="">Seleccionar periodo...</option>
+              <option value="custom">📅 Personalizar fecha...</option>
 
               {currentPeriodType === "15_14" ? (
                 <>
@@ -317,6 +356,29 @@ function App() {
               )}
             </select>
           </div>
+
+          {period === 'custom' && (
+            <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{ flex: 1 }}>
+                <label>Inicio del periodo</label>
+                <input
+                  type="date"
+                  value={customPeriodStart}
+                  onChange={(e) => setCustomPeriodStart(e.target.value)}
+                  required
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label>Fin del periodo</label>
+                <input
+                  type="date"
+                  value={customPeriodEnd}
+                  onChange={(e) => setCustomPeriodEnd(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="transferDate">Transferencia Recibida</label>
