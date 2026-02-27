@@ -19,7 +19,7 @@ const DEFAULT_APARTMENTS = [
   { ref: "20", address: "POETA VILA Y BLANCO, 4 – 10º - 168 03003 ALICANTE", periodType: "1_31" },
   { ref: "23", address: "C/ SAN TELMO, 4 – 1º DERECHA - EXTERIOR", periodType: "1_31" },
   { ref: "31", address: "C/ SAN CARLOS, 130 - 2º IZQ", periodType: "06_05" },
-  { ref: "32", address: "C/ DEPORTISTA RAMÓN MENDIZABAL, 10 - 3º IZQ.", periodType: "1_31" }
+  { ref: "21", address: "C/ DEPORTISTA RAMÓN MENDIZABAL, 10 - 3º IZQ.", periodType: "1_31" }
 ];
 
 function App() {
