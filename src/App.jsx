@@ -46,8 +46,10 @@ function App() {
   // Factura
   const [invNumber, setInvNumber] = useState('');
   const [period, setPeriod] = useState('');
-  const [customPeriodStart, setCustomPeriodStart] = useState('');
-  const [customPeriodEnd, setCustomPeriodEnd] = useState('');
+  const [customStartDay, setCustomStartDay] = useState('');
+  const [customEndDay, setCustomEndDay] = useState('');
+  const [customMonth, setCustomMonth] = useState('');
+  const [customYear, setCustomYear] = useState('');
   const [transferDate, setTransferDate] = useState('');
 
   // UI
@@ -111,17 +113,14 @@ function App() {
 
     let finalPeriod = period;
     if (period === 'custom') {
-      if (!customPeriodStart || !customPeriodEnd) {
+      if (!customStartDay || !customEndDay || !customMonth || !customYear) {
         setStatus('error');
-        setMessage('Debes seleccionar las fechas de inicio y fin del periodo');
+        setMessage('Debes seleccionar el día de inicio, día de fin, mes y año');
         return;
       }
-      const dateStart = new Date(customPeriodStart);
-      const dateEnd = new Date(customPeriodEnd);
-      const options = { day: '2-digit', month: 'long', year: 'numeric' };
-      const startStr = dateStart.toLocaleDateString('es-ES', options);
-      const endStr = dateEnd.toLocaleDateString('es-ES', options);
-      finalPeriod = `Del ${startStr} al ${endStr}`;
+      const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const mesNombre = MESES[parseInt(customMonth, 10) - 1];
+      finalPeriod = `Del ${customStartDay} al ${customEndDay} de ${mesNombre} de ${customYear}`;
     }
 
     const webhookUrl = window.location.hostname === 'localhost'
@@ -358,24 +357,57 @@ function App() {
           </div>
 
           {period === 'custom' && (
-            <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
-              <div style={{ flex: 1 }}>
-                <label>Inicio del periodo</label>
-                <input
-                  type="date"
-                  value={customPeriodStart}
-                  onChange={(e) => setCustomPeriodStart(e.target.value)}
+            <div className="form-group">
+              <label>Periodo personalizado</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600, whiteSpace: 'nowrap' }}>Del</span>
+                <select
+                  value={customStartDay}
+                  onChange={(e) => setCustomStartDay(e.target.value)}
                   required
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label>Fin del periodo</label>
-                <input
-                  type="date"
-                  value={customPeriodEnd}
-                  onChange={(e) => setCustomPeriodEnd(e.target.value)}
+                  style={{ width: '70px' }}
+                >
+                  <option value="">Día</option>
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                    <option key={d} value={String(d).padStart(2, '0')}>{String(d).padStart(2, '0')}</option>
+                  ))}
+                </select>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600, whiteSpace: 'nowrap' }}>al</span>
+                <select
+                  value={customEndDay}
+                  onChange={(e) => setCustomEndDay(e.target.value)}
                   required
-                />
+                  style={{ width: '70px' }}
+                >
+                  <option value="">Día</option>
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                    <option key={d} value={String(d).padStart(2, '0')}>{String(d).padStart(2, '0')}</option>
+                  ))}
+                </select>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600, whiteSpace: 'nowrap' }}>de</span>
+                <select
+                  value={customMonth}
+                  onChange={(e) => setCustomMonth(e.target.value)}
+                  required
+                  style={{ width: '130px' }}
+                >
+                  <option value="">Mes</option>
+                  {['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].map((m, i) => (
+                    <option key={i + 1} value={String(i + 1).padStart(2, '0')}>{m}</option>
+                  ))}
+                </select>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600, whiteSpace: 'nowrap' }}>de</span>
+                <select
+                  value={customYear}
+                  onChange={(e) => setCustomYear(e.target.value)}
+                  required
+                  style={{ width: '90px' }}
+                >
+                  <option value="">Año</option>
+                  {[2025, 2026, 2027, 2028].map(y => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
               </div>
             </div>
           )}
